@@ -10,6 +10,7 @@ class Game {
         this.input = new InputManager();
         this.audio = new AudioManager();
         this.save = new SaveManager();
+        this.easyMode = false;
 
         this.saveData = this.save.load();
         this.totalCoins = this.saveData.totalCoins;

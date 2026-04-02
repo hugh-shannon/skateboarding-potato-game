@@ -139,9 +139,11 @@ class PlayingScene {
             const obsBounds = obs.getBounds();
             if (Physics.aabbOverlap(playerBounds, obsBounds)) {
                 if (this.player.hit()) {
-                    this.lives--;
+                    if (!this.game.easyMode) {
+                        this.lives--;
+                    }
                     this.particles.emitHitBurst(this.player.screenX, this.player.y + this.player.height / 2);
-                    if (this.lives <= 0) {
+                    if (!this.game.easyMode && this.lives <= 0) {
                         this.game.audio.playSFX('gameover');
                         this.game.switchScene('gameover', {
                             score: Math.floor(this.scoring.score),
@@ -174,9 +176,11 @@ class PlayingScene {
         if (result) {
             if (result.bail) {
                 if (this.player.hit()) {
-                    this.lives--;
+                    if (!this.game.easyMode) {
+                        this.lives--;
+                    }
                     this.particles.emitHitBurst(this.player.screenX, this.player.y);
-                    if (this.lives <= 0) {
+                    if (!this.game.easyMode && this.lives <= 0) {
                         this.game.audio.playSFX('gameover');
                         this.game.switchScene('gameover', {
                             score: Math.floor(this.scoring.score),
@@ -253,6 +257,10 @@ class PlayingScene {
         this.particles.draw(ctx);
         this.scoring.drawPopups(ctx);
         this.scoring.drawHUD(ctx, this.lives, this.coins, this.levelName);
+
+        if (this.game.easyMode) {
+            Draw.neonText(ctx, 'EASY', 940, 55, COLORS.NEON_GREEN, 10, 'right');
+        }
 
         if (this.levelIntroTimer > 0) {
             this.drawLevelIntro(ctx);
