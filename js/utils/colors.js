@@ -1,0 +1,20 @@
+const COLORS = {
+    NEON_PINK: '#ff00ff',
+    NEON_CYAN: '#00ffff',
+    NEON_YELLOW: '#ffff00',
+    NEON_GREEN: '#39ff14',
+    NEON_ORANGE: '#ff6600',
+    NEON_RED: '#ff0044',
+    DARK_BG: '#0a0a2e',
+    DARK_PURPLE: '#1a0033',
+    GRID_LINE: '#330066',
+    STREET_DARK: '#1a1a2e',
+    STREET_LIGHT: '#2a2a3e',
+    SIDEWALK: '#3a3a4e',
+    POTATO_BROWN: '#c4883c',
+    POTATO_LIGHT: '#d4a85c',
+    POTATO_DARK: '#8a5a1c',
+    GOLD: '#ffd700',
+    WHITE: '#ffffff',
+    BLACK: '#000000'
+};
