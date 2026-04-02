@@ -2,7 +2,7 @@ class MenuScene {
     constructor(game) {
         this.game = game;
         this.selectedOption = 0;
-        this.options = ['START RUN', 'STORE', 'CONTROLS'];
+        this.options = ['START RUN', 'EASY MODE: OFF', 'STORE', 'CONTROLS'];
         this.showControls = false;
         this.animTimer = 0;
         this.potatoX = 200;
@@ -53,9 +53,13 @@ class MenuScene {
                     this.game.switchScene('playing', { level: 0 });
                     break;
                 case 1:
-                    this.game.switchScene('store');
+                    this.game.easyMode = !this.game.easyMode;
+                    this.options[1] = this.game.easyMode ? 'EASY MODE: ON' : 'EASY MODE: OFF';
                     break;
                 case 2:
+                    this.game.switchScene('store');
+                    break;
+                case 3:
                     this.showControls = true;
                     break;
             }
@@ -93,7 +97,8 @@ class MenuScene {
         for (let i = 0; i < this.options.length; i++) {
             const y = 320 + i * 45;
             const selected = i === this.selectedOption;
-            const color = selected ? COLORS.NEON_YELLOW : COLORS.NEON_CYAN;
+            const isEasyOn = i === 1 && this.game.easyMode;
+            const color = isEasyOn ? COLORS.NEON_GREEN : (selected ? COLORS.NEON_YELLOW : COLORS.NEON_CYAN);
             const size = selected ? 16 : 13;
 
             if (selected) {
