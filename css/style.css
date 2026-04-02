@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Comic+Neue:wght@400;700&display=swap');
 
 * {
     margin: 0;
@@ -7,18 +7,17 @@
 }
 
 body {
-    background: #0a0a2e;
+    background: #faf8f0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     overflow: hidden;
-    font-family: 'Press Start 2P', monospace;
+    font-family: 'Patrick Hand', 'Comic Neue', cursive;
 }
 
 canvas {
     display: block;
     max-width: 100vw;
     max-height: 100vh;
-    image-rendering: pixelated;
 }

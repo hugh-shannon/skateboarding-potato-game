@@ -1,13 +1,13 @@
 const STORE_ITEMS = {
     skins: [
-        { id: 'classic', name: 'Classic Spud', price: 0, description: 'The OG potato. Brown and proud.', owned: true },
-        { id: 'hot_potato', name: 'Hot Potato', price: 500, description: 'Too hot to handle! Red with flames.' },
-        { id: 'cool_spud', name: 'Cool Spud', price: 500, description: 'Chill vibes. Blue with shades.' },
-        { id: 'golden', name: 'Golden Potato', price: 1000, description: 'Pure gold, baby. Bling bling!' },
-        { id: 'neon_tater', name: 'Neon Tater', price: 1500, description: 'Glows in the dark. Totally tubular!' },
-        { id: 'baked', name: 'Baked Potato', price: 2000, description: 'Wrapped in foil. Fully loaded.' },
-        { id: 'french_fry', name: 'French Fry', price: 3000, description: 'A bundle of fries. Crispy!' },
-        { id: 'galaxy', name: 'Galaxy Spud', price: 5000, description: 'Far out! A cosmic potato.' }
+        { id: 'classic', name: 'Classic Spud', price: 0, description: 'A simple brown crayon potato.' },
+        { id: 'crayon_spud', name: 'Crayon Spud', price: 500, description: 'Scribbled in rainbow crayon stripes!' },
+        { id: 'stick_figure', name: 'Stick Figure Spud', price: 500, description: 'Drawn as a simple pencil sketch.' },
+        { id: 'princess', name: 'Princess Spud', price: 1000, description: 'Pink with a crayon crown. Royal!' },
+        { id: 'robot', name: 'Robot Spud', price: 1000, description: 'Boxy with an antenna. Beep boop!' },
+        { id: 'superhero', name: 'Superhero Spud', price: 1500, description: 'Blue with a red crayon cape!' },
+        { id: 'rainbow', name: 'Rainbow Spud', price: 2000, description: 'Changes color like magic crayons!' },
+        { id: 'doodle', name: 'Doodle Spud', price: 5000, description: 'Covered in tiny stars and hearts!' }
     ],
     upgrades: [
         { id: 'thick_skin_1', name: 'Thick Skin I', price: 300, description: '+1 starting life', requires: null },

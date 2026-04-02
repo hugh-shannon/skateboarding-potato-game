@@ -25,9 +25,7 @@ class StoreScene {
 
     update(dt) {
         this.animTimer += dt;
-        if (this.messageTimer > 0) {
-            this.messageTimer -= dt;
-        }
+        if (this.messageTimer > 0) this.messageTimer -= dt;
 
         const input = this.game.input;
 
@@ -66,23 +64,23 @@ class StoreScene {
             if (this.selectedTab === 0) {
                 this.game.equippedSkin = item.id;
                 this.game.persist();
-                this.showMessage('EQUIPPED!', COLORS.NEON_GREEN);
+                this.showMessage('EQUIPPED!', COLORS.CRAYON_GREEN);
                 this.game.audio.playSFX('coin');
             } else {
-                this.showMessage('ALREADY OWNED', COLORS.NEON_CYAN);
+                this.showMessage('ALREADY OWNED', COLORS.CRAYON_BLUE);
             }
             return;
         }
 
         if (item.requires && !this.game.purchasedItems.includes(item.requires)) {
             const reqItem = STORE_ITEMS.upgrades.find(u => u.id === item.requires);
-            this.showMessage(`REQUIRES ${reqItem ? reqItem.name.toUpperCase() : 'PREREQUISITE'}`, COLORS.NEON_RED);
+            this.showMessage(`REQUIRES ${reqItem ? reqItem.name.toUpperCase() : 'PREREQUISITE'}`, COLORS.CRAYON_RED);
             this.game.audio.playSFX('hit');
             return;
         }
 
         if (this.game.totalCoins < item.price) {
-            this.showMessage('NOT ENOUGH COINS!', COLORS.NEON_RED);
+            this.showMessage('NOT ENOUGH COINS!', COLORS.CRAYON_RED);
             this.game.audio.playSFX('hit');
             return;
         }
@@ -95,7 +93,7 @@ class StoreScene {
         }
 
         this.game.persist();
-        this.showMessage('PURCHASED!', COLORS.NEON_GREEN);
+        this.showMessage('PURCHASED!', COLORS.CRAYON_GREEN);
         this.game.audio.playSFX('purchase');
     }
 
@@ -109,30 +107,30 @@ class StoreScene {
         const w = this.game.width;
         const h = this.game.height;
 
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#0a0a2e');
-        grad.addColorStop(0.5, '#0a1a2e');
-        grad.addColorStop(1, '#0a0a2e');
-        ctx.fillStyle = grad;
+        ctx.fillStyle = COLORS.PAPER_WHITE;
         ctx.fillRect(0, 0, w, h);
+        Draw.notebookLines(ctx, w, h);
 
-        Draw.neonText(ctx, 'SPUD SHOP', w / 2, 40, COLORS.NEON_PINK, 28, 'center');
-
-        Draw.neonText(ctx, `COINS: ${this.game.totalCoins}`, w - 20, 40, COLORS.GOLD, 12, 'right');
+        Draw.sketchText(ctx, 'SPUD SHOP', w / 2, 40, COLORS.CRAYON_PURPLE, 32, 'center');
+        Draw.sketchText(ctx, `Coins: ${this.game.totalCoins}`, w - 20, 40, COLORS.GOLD_CRAYON, 14, 'right');
 
         for (let i = 0; i < this.tabs.length; i++) {
-            const tabX = 240 + i * 240;
+            const tabX = 300 + i * 200;
             const selected = i === this.selectedTab;
-            const color = selected ? COLORS.NEON_YELLOW : '#555577';
+            const color = selected ? COLORS.CRAYON_RED : COLORS.PENCIL_LIGHT;
 
-            Draw.neonText(ctx, this.tabs[i], tabX, 85, color, selected ? 14 : 12, 'center');
+            Draw.sketchText(ctx, this.tabs[i], tabX, 85, color, selected ? 18 : 15, 'center');
 
             if (selected) {
-                Draw.glowLine(ctx, tabX - 60, 98, tabX + 60, 98, color, 2, 6);
+                ctx.save();
+                ctx.strokeStyle = color;
+                ctx.lineWidth = 2;
+                Draw.wobblyLine(ctx, tabX - 50, 98, tabX + 50, 98, 3);
+                ctx.restore();
             }
         }
 
-        Draw.neonText(ctx, 'LEFT/RIGHT: Switch tabs', 480, 85, '#444466', 8, 'center');
+        Draw.sketchText(ctx, 'LEFT/RIGHT: Switch tabs', 480, 85, COLORS.PENCIL_LIGHT, 10, 'center');
 
         const items = this.getCurrentItems();
         const startY = 120;
@@ -147,43 +145,37 @@ class StoreScene {
             const equipped = this.selectedTab === 0 && this.game.equippedSkin === item.id;
 
             if (selected) {
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
-                ctx.fillRect(50, y - 5, w - 100, itemHeight - 4);
-
-                const blink = Math.sin(this.animTimer * 6) > 0;
-                if (blink) {
-                    Draw.neonText(ctx, '>', 60, y + 12, COLORS.NEON_PINK, 12, 'left');
-                }
-            }
-
-            const nameColor = selected ? COLORS.WHITE : '#aaaacc';
-            Draw.neonText(ctx, item.name.toUpperCase(), 85, y + 8, nameColor, 10, 'left');
-
-            ctx.save();
-            ctx.font = "8px 'Press Start 2P', monospace";
-            ctx.fillStyle = '#8888aa';
-            ctx.textAlign = 'left';
-            ctx.fillText(item.description, 85, y + 26);
-            ctx.restore();
-
-            if (equipped) {
-                Draw.neonText(ctx, 'EQUIPPED', w - 80, y + 12, COLORS.NEON_GREEN, 8, 'center');
-            } else if (owned) {
-                Draw.neonText(ctx, this.selectedTab === 0 ? 'OWNED' : 'OWNED', w - 80, y + 12, COLORS.NEON_CYAN, 8, 'center');
-            } else {
-                Draw.neonText(ctx, `${item.price}`, w - 80, y + 12, COLORS.GOLD, 10, 'center');
+                ctx.save();
+                ctx.strokeStyle = COLORS.PENCIL_LIGHT;
+                ctx.lineWidth = 1;
+                Draw.wobblyRect(ctx, 50, y - 5, w - 100, itemHeight - 4, 2);
+                ctx.restore();
 
                 ctx.save();
-                ctx.fillStyle = COLORS.GOLD;
-                ctx.beginPath();
-                ctx.arc(w - 110, y + 12, 6, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#ffee44';
-                ctx.font = 'bold 7px monospace';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('$', w - 110, y + 13);
+                ctx.strokeStyle = COLORS.CRAYON_RED;
+                ctx.lineWidth = 2;
+                Draw.wobblyArrow(ctx, 55, y + 12, 14, 2);
                 ctx.restore();
+            }
+
+            const nameColor = selected ? COLORS.PENCIL : COLORS.PENCIL_LIGHT;
+            Draw.sketchText(ctx, item.name, 85, y + 8, nameColor, 13, 'left');
+
+            Draw.sketchText(ctx, item.description, 85, y + 26, COLORS.PENCIL_LIGHT, 10, 'left');
+
+            if (equipped) {
+                Draw.sketchText(ctx, 'EQUIPPED', w - 80, y + 12, COLORS.CRAYON_GREEN, 10, 'center');
+            } else if (owned) {
+                Draw.sketchText(ctx, 'OWNED', w - 80, y + 12, COLORS.CRAYON_BLUE, 10, 'center');
+            } else {
+                ctx.save();
+                ctx.strokeStyle = COLORS.GOLD_CRAYON;
+                ctx.lineWidth = 1.5;
+                Draw.wobblyCircle(ctx, w - 110, y + 12, 6, 1.5);
+                Draw.sketchText(ctx, '$', w - 110, y + 13, COLORS.GOLD_CRAYON, 8, 'center');
+                ctx.restore();
+
+                Draw.sketchText(ctx, `${item.price}`, w - 80, y + 12, COLORS.GOLD_CRAYON, 13, 'center');
             }
         }
 
@@ -193,16 +185,12 @@ class StoreScene {
             const equipped = this.selectedTab === 0 && this.game.equippedSkin === item.id;
 
             let hint = '';
-            if (equipped) {
-                hint = 'Currently equipped';
-            } else if (owned && this.selectedTab === 0) {
-                hint = 'Press ENTER to equip';
-            } else if (!owned) {
-                hint = 'Press ENTER to buy';
-            }
+            if (equipped) hint = 'Currently equipped';
+            else if (owned && this.selectedTab === 0) hint = 'Press ENTER to equip';
+            else if (!owned) hint = 'Press ENTER to buy';
 
             if (hint) {
-                Draw.neonText(ctx, hint, w / 2, h - 55, '#666688', 9, 'center');
+                Draw.sketchText(ctx, hint, w / 2, h - 55, COLORS.PENCIL_LIGHT, 12, 'center');
             }
         }
 
@@ -210,15 +198,10 @@ class StoreScene {
             const alpha = Math.min(1, this.messageTimer);
             ctx.save();
             ctx.globalAlpha = alpha;
-            const msgPulse = 1 + Math.sin(this.animTimer * 10) * 0.05;
-            ctx.translate(w / 2, h / 2);
-            ctx.scale(msgPulse, msgPulse);
-            Draw.neonText(ctx, this.message, 0, 0, this.messageColor, 20, 'center');
+            Draw.sketchText(ctx, this.message, w / 2, h / 2, this.messageColor, 24, 'center');
             ctx.restore();
         }
 
-        Draw.neonText(ctx, 'ESC: Back to menu', w / 2, h - 25, '#444466', 8, 'center');
-
-        Draw.scanlines(ctx, w, h);
+        Draw.sketchText(ctx, 'ESC: Back to menu', w / 2, h - 25, COLORS.PENCIL_LIGHT, 10, 'center');
     }
 }

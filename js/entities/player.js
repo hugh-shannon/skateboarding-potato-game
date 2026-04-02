@@ -180,7 +180,6 @@ class Player {
     updateGrinding(dt) {
         if (this.grindRail) {
             this.y = this.grindRail.y - this.height - this.boardHeight;
-
             const railEnd = this.grindRail.x + this.grindRail.width;
             if (this.worldX > railEnd - 10) {
                 this.endGrind();
@@ -242,143 +241,135 @@ class Player {
 
     drawPotato(ctx) {
         const skin = this.game.equippedSkin;
-        const colors = this.getSkinColors(skin);
+        const fillColor = this.getSkinFillColor(skin);
 
-        ctx.fillStyle = colors.main;
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2, this.height / 2, this.width / 2 - 2, this.height / 2 - 2, 0, 0, Math.PI * 2);
-        ctx.fill();
+        Draw.scribbleFill(ctx, 3, 3, this.width - 6, this.height - 6, fillColor, 5);
 
-        ctx.fillStyle = colors.highlight;
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2 - 5, this.height / 2 - 8, 6, 4, -0.3, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 2;
+        Draw.wobblyEllipse(ctx, this.width / 2, this.height / 2, this.width / 2 - 2, this.height / 2 - 2, 2);
 
-        if (skin === 'neon_tater') {
-            ctx.save();
-            ctx.strokeStyle = COLORS.NEON_PINK;
-            ctx.shadowColor = COLORS.NEON_PINK;
-            ctx.shadowBlur = 10;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.ellipse(this.width / 2, this.height / 2, this.width / 2 - 2, this.height / 2 - 2, 0, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
-        }
-
+        this.drawSkinExtras(ctx, skin);
         this.drawFace(ctx);
         this.drawLimbs(ctx);
     }
 
-    getSkinColors(skin) {
-        const skins = {
-            classic: { main: COLORS.POTATO_BROWN, highlight: COLORS.POTATO_LIGHT },
-            hot_potato: { main: '#cc3300', highlight: '#ff6633' },
-            cool_spud: { main: '#4488cc', highlight: '#66aaee' },
-            golden: { main: COLORS.GOLD, highlight: '#ffee88' },
-            neon_tater: { main: '#220044', highlight: '#330066' },
-            baked: { main: '#888888', highlight: '#aaaaaa' },
-            french_fry: { main: '#ddaa33', highlight: '#eecc55' },
-            galaxy: { main: '#220055', highlight: '#4400aa' }
+    getSkinFillColor(skin) {
+        const fills = {
+            classic: COLORS.POTATO_BROWN,
+            crayon_spud: COLORS.CRAYON_RED,
+            stick_figure: COLORS.PENCIL_LIGHT,
+            princess: COLORS.CRAYON_PINK,
+            robot: COLORS.PENCIL_LIGHT,
+            superhero: COLORS.CRAYON_BLUE,
+            rainbow: COLORS.CRAYON_YELLOW,
+            doodle: COLORS.POTATO_BROWN
         };
-        return skins[skin] || skins.classic;
+        return fills[skin] || fills.classic;
+    }
+
+    drawSkinExtras(ctx, skin) {
+        ctx.save();
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 1.5;
+
+        if (skin === 'crayon_spud') {
+            ctx.strokeStyle = COLORS.CRAYON_BLUE;
+            Draw.wobblyLine(ctx, 8, 8, 32, 12, 2);
+            ctx.strokeStyle = COLORS.CRAYON_GREEN;
+            Draw.wobblyLine(ctx, 10, 18, 30, 22, 2);
+            ctx.strokeStyle = COLORS.CRAYON_PURPLE;
+            Draw.wobblyLine(ctx, 12, 28, 28, 32, 2);
+        } else if (skin === 'princess') {
+            ctx.strokeStyle = COLORS.CRAYON_YELLOW;
+            Draw.wobblyTriangle(ctx, this.width / 2 - 8, -2, this.width / 2, -12, this.width / 2 + 8, -2, 2);
+            Draw.wobblyLine(ctx, this.width / 2 - 3, -8, this.width / 2 - 3, -5, 1);
+            Draw.wobblyLine(ctx, this.width / 2 + 3, -8, this.width / 2 + 3, -5, 1);
+        } else if (skin === 'robot') {
+            ctx.strokeStyle = COLORS.PENCIL;
+            Draw.wobblyRect(ctx, 5, 5, this.width - 10, this.height - 10, 2);
+            Draw.wobblyLine(ctx, this.width / 2, -4, this.width / 2, 2, 1);
+            Draw.wobblyCircle(ctx, this.width / 2, -6, 3, 1);
+        } else if (skin === 'superhero') {
+            ctx.strokeStyle = COLORS.CRAYON_RED;
+            ctx.lineWidth = 2;
+            Draw.wobblyTriangle(ctx, this.width - 2, 10, this.width + 15, 5, this.width + 12, 25, 3);
+        } else if (skin === 'rainbow') {
+            const t = Math.floor(Date.now() / 500);
+            const rainbowColors = [COLORS.CRAYON_RED, COLORS.CRAYON_ORANGE, COLORS.CRAYON_YELLOW, COLORS.CRAYON_GREEN, COLORS.CRAYON_BLUE, COLORS.CRAYON_PURPLE];
+            const idx = t % rainbowColors.length;
+            Draw.scribbleFill(ctx, 3, 3, this.width - 6, this.height - 6, rainbowColors[idx], 5);
+        } else if (skin === 'doodle') {
+            ctx.strokeStyle = COLORS.PENCIL;
+            ctx.lineWidth = 1;
+            Draw.wobblyStarDoodle(ctx, 10, 10, 4);
+            Draw.wobblyStarDoodle(ctx, 30, 15, 3);
+            Draw.wobblyStarDoodle(ctx, 15, 30, 3);
+            Draw.wobblyStarDoodle(ctx, 28, 35, 4);
+            // hearts
+            ctx.beginPath();
+            ctx.moveTo(22, 8);
+            ctx.lineTo(20, 5);
+            ctx.lineTo(18, 8);
+            ctx.lineTo(22, 12);
+            ctx.lineTo(26, 8);
+            ctx.lineTo(24, 5);
+            ctx.lineTo(22, 8);
+            ctx.stroke();
+        }
+
+        ctx.restore();
     }
 
     drawFace(ctx) {
         const eyeY = this.height / 2 - 4;
 
-        ctx.fillStyle = COLORS.WHITE;
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2 - 6, eyeY, 4, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2 + 6, eyeY, 4, 5, 0, 0, Math.PI * 2);
-        ctx.fill();
-
         ctx.fillStyle = COLORS.BLACK;
-        const pupilOffset = this.expression === 'hurt' ? 0 : 1;
         ctx.beginPath();
-        ctx.arc(this.width / 2 - 5 + pupilOffset, eyeY, 2, 0, Math.PI * 2);
+        ctx.arc(this.width / 2 - 6, eyeY, 2.5, 0, Math.PI * 2);
         ctx.fill();
         ctx.beginPath();
-        ctx.arc(this.width / 2 + 7 + pupilOffset, eyeY, 2, 0, Math.PI * 2);
+        ctx.arc(this.width / 2 + 6, eyeY, 2.5, 0, Math.PI * 2);
         ctx.fill();
-
-        if (this.game.equippedSkin === 'cool_spud') {
-            ctx.fillStyle = '#222222';
-            ctx.fillRect(this.width / 2 - 14, eyeY - 2, 28, 6);
-            ctx.fillStyle = '#444488';
-            ctx.fillRect(this.width / 2 - 12, eyeY - 1, 10, 4);
-            ctx.fillRect(this.width / 2 + 2, eyeY - 1, 10, 4);
-        }
 
         const mouthY = this.height / 2 + 8;
         ctx.strokeStyle = COLORS.BLACK;
         ctx.lineWidth = 2;
-        ctx.beginPath();
 
         if (this.expression === 'happy') {
-            ctx.arc(this.width / 2, mouthY, 5, 0, Math.PI);
+            Draw.wobblyLine(ctx, this.width / 2 - 5, mouthY, this.width / 2, mouthY + 4, 1);
+            Draw.wobblyLine(ctx, this.width / 2, mouthY + 4, this.width / 2 + 5, mouthY, 1);
         } else if (this.expression === 'hurt') {
-            ctx.arc(this.width / 2, mouthY + 5, 5, Math.PI, 0);
+            Draw.wobblyLine(ctx, this.width / 2 - 5, mouthY + 4, this.width / 2, mouthY, 1);
+            Draw.wobblyLine(ctx, this.width / 2, mouthY, this.width / 2 + 5, mouthY + 4, 1);
         } else if (this.expression === 'cool') {
-            ctx.moveTo(this.width / 2 - 5, mouthY);
-            ctx.lineTo(this.width / 2 + 5, mouthY);
+            Draw.wobblyLine(ctx, this.width / 2 - 5, mouthY, this.width / 2 + 5, mouthY, 1);
         } else if (this.expression === 'focused') {
-            ctx.arc(this.width / 2, mouthY, 3, 0, Math.PI * 2);
+            ctx.strokeStyle = COLORS.BLACK;
+            Draw.wobblyCircle(ctx, this.width / 2, mouthY, 3, 1);
         } else {
-            ctx.arc(this.width / 2, mouthY, 4, 0.2, Math.PI - 0.2);
+            Draw.wobblyLine(ctx, this.width / 2 - 4, mouthY, this.width / 2, mouthY + 2, 1);
+            Draw.wobblyLine(ctx, this.width / 2, mouthY + 2, this.width / 2 + 4, mouthY, 1);
         }
-        ctx.stroke();
     }
 
     drawLimbs(ctx) {
-        ctx.strokeStyle = COLORS.POTATO_DARK;
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 2;
 
-        ctx.beginPath();
-        ctx.moveTo(4, this.height / 2);
-        ctx.lineTo(-4, this.height / 2 + 8);
-        ctx.stroke();
+        Draw.wobblyLine(ctx, 4, this.height / 2, -4, this.height / 2 + 10, 2);
+        Draw.wobblyLine(ctx, this.width - 4, this.height / 2, this.width + 4, this.height / 2 + 10, 2);
 
-        ctx.beginPath();
-        ctx.moveTo(this.width - 4, this.height / 2);
-        ctx.lineTo(this.width + 4, this.height / 2 + 8);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(this.width / 2 - 8, this.height - 4);
-        ctx.lineTo(this.width / 2 - 10, this.height + 4);
-        ctx.stroke();
-
-        ctx.beginPath();
-        ctx.moveTo(this.width / 2 + 8, this.height - 4);
-        ctx.lineTo(this.width / 2 + 10, this.height + 4);
-        ctx.stroke();
+        Draw.wobblyLine(ctx, this.width / 2 - 8, this.height - 4, this.width / 2 - 10, this.height + 6, 2);
+        Draw.wobblyLine(ctx, this.width / 2 + 8, this.height - 4, this.width / 2 + 10, this.height + 6, 2);
     }
 
     drawSkateboard(ctx) {
-        ctx.fillStyle = '#663300';
-        Draw.roundedRect(ctx, -this.boardWidth / 2, 0, this.boardWidth, this.boardHeight, 3);
-        ctx.fill();
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 2;
+        Draw.wobblyRect(ctx, -this.boardWidth / 2, 0, this.boardWidth, this.boardHeight, 2);
 
-        ctx.fillStyle = COLORS.NEON_PINK;
-        ctx.fillRect(-this.boardWidth / 2 + 4, 2, this.boardWidth - 8, 4);
-
-        ctx.fillStyle = '#333333';
-        ctx.beginPath();
-        ctx.arc(-this.boardWidth / 2 + 8, this.boardHeight + 2, 4, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(this.boardWidth / 2 - 8, this.boardHeight + 2, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = '#555555';
-        ctx.beginPath();
-        ctx.arc(-this.boardWidth / 2 + 8, this.boardHeight + 2, 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.arc(this.boardWidth / 2 - 8, this.boardHeight + 2, 2, 0, Math.PI * 2);
-        ctx.fill();
+        Draw.wobblyCircle(ctx, -this.boardWidth / 2 + 8, this.boardHeight + 3, 4, 1.5);
+        Draw.wobblyCircle(ctx, this.boardWidth / 2 - 8, this.boardHeight + 3, 4, 1.5);
     }
 }

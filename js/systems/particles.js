@@ -18,66 +18,41 @@ class ParticleSystem {
                 maxLife: config.life || (0.3 + Math.random() * 0.5),
                 size: config.size || (2 + Math.random() * 3),
                 color: color,
-                gravity: config.gravity !== undefined ? config.gravity : 200
+                gravity: config.gravity !== undefined ? config.gravity : 200,
+                shape: Math.floor(Math.random() * 3)
             });
         }
     }
 
     emitSparks(x, y) {
-        this.emit(x, y, 3, COLORS.NEON_YELLOW, {
-            vx: -80,
-            vy: -30,
-            spread: 60,
-            life: 0.2,
-            size: 2,
-            gravity: 300
+        this.emit(x, y, 3, COLORS.CRAYON_YELLOW, {
+            vx: -80, vy: -30, spread: 60, life: 0.2, size: 2, gravity: 300
         });
-        this.emit(x, y, 2, COLORS.NEON_ORANGE, {
-            vx: -60,
-            vy: -40,
-            spread: 40,
-            life: 0.15,
-            size: 1.5,
-            gravity: 300
+        this.emit(x, y, 2, COLORS.CRAYON_ORANGE, {
+            vx: -60, vy: -40, spread: 40, life: 0.15, size: 1.5, gravity: 300
         });
     }
 
     emitCoinBurst(x, y) {
-        this.emit(x, y, 8, COLORS.GOLD, {
-            spread: 150,
-            vy: -80,
-            life: 0.5,
-            size: 3,
-            gravity: 100
+        this.emit(x, y, 8, COLORS.GOLD_CRAYON, {
+            spread: 150, vy: -80, life: 0.5, size: 3, gravity: 100
         });
-        this.emit(x, y, 4, COLORS.NEON_YELLOW, {
-            spread: 100,
-            vy: -60,
-            life: 0.4,
-            size: 2,
-            gravity: 100
+        this.emit(x, y, 4, COLORS.CRAYON_YELLOW, {
+            spread: 100, vy: -60, life: 0.4, size: 2, gravity: 100
         });
     }
 
     emitHitBurst(x, y) {
-        this.emit(x, y, 12, COLORS.NEON_RED, {
-            spread: 200,
-            vy: -100,
-            life: 0.6,
-            size: 4,
-            gravity: 150
+        this.emit(x, y, 12, COLORS.CRAYON_RED, {
+            spread: 200, vy: -100, life: 0.6, size: 4, gravity: 150
         });
     }
 
     emitLevelComplete(x, y) {
-        const colors = [COLORS.NEON_PINK, COLORS.NEON_CYAN, COLORS.NEON_YELLOW, COLORS.NEON_GREEN];
+        const colors = [COLORS.CRAYON_PINK, COLORS.CRAYON_BLUE, COLORS.CRAYON_YELLOW, COLORS.CRAYON_GREEN];
         for (const c of colors) {
             this.emit(x, y, 15, c, {
-                spread: 300,
-                vy: -150,
-                life: 1.5,
-                size: 4,
-                gravity: 80
+                spread: 300, vy: -150, life: 1.5, size: 4, gravity: 80
             });
         }
     }
@@ -101,10 +76,24 @@ class ParticleSystem {
             const alpha = Math.max(0, p.life / p.maxLife);
             ctx.save();
             ctx.globalAlpha = alpha;
-            ctx.shadowColor = p.color;
-            ctx.shadowBlur = 6;
+            ctx.strokeStyle = p.color;
             ctx.fillStyle = p.color;
-            ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+            ctx.lineWidth = 1.5;
+
+            if (p.shape === 0) {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (p.shape === 1) {
+                Draw.wobblyStarDoodle(ctx, p.x, p.y, p.size);
+            } else {
+                const angle = Math.atan2(p.vy, p.vx);
+                ctx.beginPath();
+                ctx.moveTo(p.x - Math.cos(angle) * p.size, p.y - Math.sin(angle) * p.size);
+                ctx.lineTo(p.x + Math.cos(angle) * p.size, p.y + Math.sin(angle) * p.size);
+                ctx.stroke();
+            }
+
             ctx.restore();
         }
     }

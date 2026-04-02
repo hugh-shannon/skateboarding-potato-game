@@ -41,7 +41,7 @@ class ScoringSystem {
             y: screenY,
             timer: 0,
             duration: 1.2,
-            color: COLORS.NEON_YELLOW
+            color: COLORS.CRAYON_BLUE
         });
 
         if (this.comboCount > 1) {
@@ -52,7 +52,7 @@ class ScoringSystem {
                 y: 200,
                 timer: 0,
                 duration: 1.0,
-                color: COLORS.NEON_PINK
+                color: COLORS.CRAYON_RED
             });
         }
     }
@@ -78,7 +78,7 @@ class ScoringSystem {
             y: screenY,
             timer: 0,
             duration: 0.8,
-            color: COLORS.NEON_GREEN
+            color: COLORS.CRAYON_GREEN
         });
     }
 
@@ -92,7 +92,7 @@ class ScoringSystem {
             y: 180,
             timer: 0,
             duration: 2.0,
-            color: COLORS.NEON_CYAN
+            color: COLORS.CRAYON_PURPLE
         });
     }
 
@@ -119,33 +119,24 @@ class ScoringSystem {
     }
 
     drawHUD(ctx, lives, coins, levelName) {
-        Draw.neonText(ctx, `SCORE: ${Math.floor(this.displayScore)}`, 940, 30, COLORS.NEON_CYAN, 14, 'right');
+        Draw.sketchText(ctx, `Score: ${Math.floor(this.displayScore)}`, 940, 30, COLORS.PENCIL, 18, 'right');
 
         ctx.save();
-        ctx.fillStyle = COLORS.GOLD;
-        ctx.shadowColor = COLORS.GOLD;
-        ctx.shadowBlur = 6;
-        ctx.beginPath();
-        ctx.arc(25, 30, 8, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = '#ffee44';
-        ctx.font = "bold 8px monospace";
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('$', 25, 31);
+        ctx.strokeStyle = COLORS.GOLD_CRAYON;
+        ctx.lineWidth = 2;
+        Draw.wobblyCircle(ctx, 25, 30, 8, 2);
+        Draw.sketchText(ctx, '$', 25, 31, COLORS.GOLD_CRAYON, 10, 'center');
         ctx.restore();
 
-        Draw.neonText(ctx, `${coins}`, 50, 30, COLORS.GOLD, 12, 'left');
+        Draw.sketchText(ctx, `${coins}`, 50, 30, COLORS.GOLD_CRAYON, 16, 'left');
 
         for (let i = 0; i < lives; i++) {
             const lx = 22 + i * 22;
             const ly = 56;
             ctx.save();
-            ctx.fillStyle = COLORS.POTATO_BROWN;
-            ctx.beginPath();
-            ctx.ellipse(lx, ly, 8, 6, 0, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.strokeStyle = COLORS.CRAYON_BROWN;
+            ctx.lineWidth = 1.5;
+            Draw.wobblyEllipse(ctx, lx, ly, 8, 6, 1.5);
             ctx.fillStyle = COLORS.BLACK;
             ctx.beginPath();
             ctx.arc(lx - 2, ly - 1, 1.5, 0, Math.PI * 2);
@@ -157,7 +148,7 @@ class ScoringSystem {
         }
 
         if (levelName) {
-            Draw.neonText(ctx, levelName, 480, 20, COLORS.NEON_PINK, 10, 'center');
+            Draw.sketchText(ctx, levelName, 480, 20, COLORS.CRAYON_PURPLE, 14, 'center');
         }
 
         if (this.comboCount > 1) {
@@ -165,7 +156,7 @@ class ScoringSystem {
             ctx.save();
             ctx.translate(480, 80);
             ctx.scale(pulse, pulse);
-            Draw.neonText(ctx, `COMBO x${this.comboCount}`, 0, 0, COLORS.NEON_PINK, 16, 'center');
+            Draw.sketchText(ctx, `COMBO x${this.comboCount}`, 0, 0, COLORS.CRAYON_RED, 22, 'center');
             ctx.restore();
         }
     }
@@ -178,9 +169,9 @@ class ScoringSystem {
 
             ctx.save();
             ctx.globalAlpha = alpha;
-            Draw.neonText(ctx, p.text, p.x, y, p.color, 12, 'center');
+            Draw.sketchText(ctx, p.text, p.x, y, p.color, 16, 'center');
             if (p.points > 0) {
-                Draw.neonText(ctx, `+${p.points}`, p.x, y + 16, p.color, 10, 'center');
+                Draw.sketchText(ctx, `+${p.points}`, p.x, y + 18, p.color, 14, 'center');
             }
             ctx.restore();
         }

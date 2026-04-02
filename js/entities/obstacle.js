@@ -27,6 +27,8 @@ class Obstacle {
 
         ctx.save();
         ctx.translate(sx, this.y);
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 2;
 
         switch (this.type) {
             case 'trash_can': this.drawTrashCan(ctx); break;
@@ -40,91 +42,71 @@ class Obstacle {
     }
 
     drawTrashCan(ctx) {
-        ctx.fillStyle = '#667788';
-        ctx.fillRect(2, 8, this.width - 4, this.height - 8);
+        Draw.wobblyRect(ctx, 2, 8, this.width - 4, this.height - 8, 2);
 
-        ctx.fillStyle = '#778899';
-        ctx.fillRect(0, 4, this.width, 6);
+        Draw.wobblyEllipse(ctx, this.width / 2, 6, this.width / 2, 5, 2);
 
-        ctx.fillStyle = '#889aab';
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2, 4, this.width / 2, 4, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = '#556677';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(4, 20);
-        ctx.lineTo(this.width - 4, 20);
-        ctx.moveTo(4, 32);
-        ctx.lineTo(this.width - 4, 32);
-        ctx.stroke();
+        Draw.wobblyLine(ctx, 4, 22, this.width - 4, 22, 1.5);
+        Draw.wobblyLine(ctx, 4, 34, this.width - 4, 34, 1.5);
     }
 
     drawHydrant(ctx) {
-        ctx.fillStyle = '#cc2222';
-        ctx.fillRect(4, 8, this.width - 8, this.height - 8);
+        ctx.strokeStyle = COLORS.CRAYON_RED;
+        ctx.lineWidth = 2;
 
-        ctx.fillStyle = '#dd3333';
-        ctx.beginPath();
-        ctx.ellipse(this.width / 2, 8, this.width / 2 - 2, 6, 0, 0, Math.PI * 2);
-        ctx.fill();
+        Draw.wobblyRect(ctx, 4, 10, this.width - 8, this.height - 10, 2);
 
-        ctx.fillStyle = '#aa1111';
-        ctx.fillRect(-2, 14, 6, 8);
-        ctx.fillRect(this.width - 4, 14, 6, 8);
+        Draw.wobblyCircle(ctx, this.width / 2, 6, 5, 2);
 
-        ctx.fillStyle = '#bb2222';
-        ctx.beginPath();
-        ctx.arc(this.width / 2, 4, 4, 0, Math.PI * 2);
-        ctx.fill();
+        Draw.wobblyRect(ctx, -2, 15, 6, 7, 1.5);
+        Draw.wobblyRect(ctx, this.width - 4, 15, 6, 7, 1.5);
     }
 
     drawBench(ctx) {
-        ctx.fillStyle = '#885533';
-        ctx.fillRect(0, 8, this.width, 5);
-        ctx.fillRect(0, 16, this.width, 5);
+        Draw.wobblyLine(ctx, 0, 10, this.width, 10, 2);
+        Draw.wobblyLine(ctx, 0, 18, this.width, 18, 2);
 
-        ctx.fillStyle = '#664422';
-        ctx.fillRect(0, 0, this.width, 5);
+        Draw.wobblyLine(ctx, 0, 0, this.width, 0, 2);
 
-        ctx.fillStyle = '#333333';
-        ctx.fillRect(2, 22, 4, this.height - 22);
-        ctx.fillRect(this.width - 6, 22, 4, this.height - 22);
+        Draw.wobblyLine(ctx, 3, 20, 3, this.height, 2);
+        Draw.wobblyLine(ctx, this.width - 3, 20, this.width - 3, this.height, 2);
     }
 
     drawCone(ctx) {
-        ctx.fillStyle = '#ff6600';
-        ctx.beginPath();
-        ctx.moveTo(this.width / 2, 0);
-        ctx.lineTo(this.width - 2, this.height - 4);
-        ctx.lineTo(2, this.height - 4);
-        ctx.closePath();
-        ctx.fill();
+        ctx.strokeStyle = COLORS.CRAYON_ORANGE;
+        ctx.lineWidth = 2;
 
-        ctx.fillStyle = COLORS.WHITE;
-        ctx.fillRect(4, 10, this.width - 8, 4);
-        ctx.fillRect(6, 18, this.width - 12, 3);
+        Draw.wobblyTriangle(ctx,
+            this.width / 2, 0,
+            this.width - 2, this.height - 4,
+            2, this.height - 4, 2);
 
-        ctx.fillStyle = '#ff6600';
-        ctx.fillRect(0, this.height - 4, this.width, 4);
+        Draw.wobblyLine(ctx, 0, this.height - 4, this.width, this.height - 4, 2);
+
+        ctx.strokeStyle = COLORS.PENCIL;
+        Draw.wobblyLine(ctx, 5, 12, this.width - 5, 12, 1.5);
+        Draw.wobblyLine(ctx, 7, 20, this.width - 7, 20, 1.5);
     }
 
     drawMailbox(ctx) {
-        ctx.fillStyle = '#2244aa';
-        ctx.fillRect(2, 10, this.width - 4, this.height - 10);
+        ctx.strokeStyle = COLORS.CRAYON_BLUE;
+        ctx.lineWidth = 2;
 
-        ctx.fillStyle = '#3355bb';
+        Draw.wobblyRect(ctx, 2, 12, this.width - 4, this.height - 12, 2);
+
         ctx.beginPath();
-        ctx.ellipse(this.width / 2, 10, this.width / 2 - 2, 8, 0, Math.PI, 0);
-        ctx.fill();
+        const baseSeed = Math.floor(this.x * 31.1);
+        for (let i = 0; i <= 10; i++) {
+            const t = i / 10;
+            const angle = Math.PI * t;
+            const px = 2 + (this.width - 4) * t;
+            const py = 12 - Math.sin(angle) * 8 + (Draw._seededRandom(baseSeed + i) - 0.5) * 2;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
 
-        ctx.fillStyle = '#1133aa';
-        ctx.fillRect(6, this.height - 20, this.width - 12, 2);
-
-        ctx.fillStyle = COLORS.WHITE;
-        ctx.font = '6px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('MAIL', this.width / 2, this.height - 6);
+        ctx.strokeStyle = COLORS.PENCIL;
+        Draw.sketchText(ctx, 'MAIL', this.width / 2, this.height - 8, COLORS.PENCIL, 7, 'center');
     }
 }

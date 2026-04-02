@@ -259,7 +259,7 @@ class PlayingScene {
         this.scoring.drawHUD(ctx, this.lives, this.coins, this.levelName);
 
         if (this.game.easyMode) {
-            Draw.neonText(ctx, 'EASY', 940, 55, COLORS.NEON_GREEN, 10, 'right');
+            Draw.sketchText(ctx, 'EASY', 940, 55, COLORS.CRAYON_GREEN, 13, 'right');
         }
 
         if (this.levelIntroTimer > 0) {
@@ -273,8 +273,6 @@ class PlayingScene {
         if (this.paused) {
             this.drawPaused(ctx);
         }
-
-        Draw.scanlines(ctx, this.game.width, this.game.height);
     }
 
     drawLevelIntro(ctx) {
@@ -282,21 +280,21 @@ class PlayingScene {
         const alpha = Math.min(1, this.levelIntroTimer);
         ctx.globalAlpha = alpha;
 
-        ctx.fillStyle = 'rgba(10, 10, 46, 0.7)';
+        ctx.fillStyle = 'rgba(250, 248, 240, 0.8)';
         ctx.fillRect(0, 0, 960, 540);
 
-        const pulse = 1 + Math.sin(Date.now() * 0.005) * 0.05;
+        const wobble = Math.sin(Date.now() * 0.003) * 0.02;
         ctx.save();
         ctx.translate(480, 220);
-        ctx.scale(pulse, pulse);
-        Draw.neonText(ctx, this.levelName, 0, 0, COLORS.NEON_PINK, 28, 'center');
+        ctx.rotate(wobble);
+        Draw.sketchText(ctx, this.levelName, 0, 0, COLORS.CRAYON_RED, 32, 'center');
         ctx.restore();
 
-        Draw.neonText(ctx, this.levelSubtitle, 480, 280, COLORS.NEON_CYAN, 12, 'center');
-        Draw.neonText(ctx, `LEVEL ${this.currentLevelIndex + 1}`, 480, 180, COLORS.NEON_YELLOW, 14, 'center');
+        Draw.sketchText(ctx, this.levelSubtitle, 480, 280, COLORS.PENCIL, 14, 'center');
+        Draw.sketchText(ctx, `Level ${this.currentLevelIndex + 1}`, 480, 180, COLORS.CRAYON_BLUE, 18, 'center');
 
         if (this.levelIntroTimer < 1.5) {
-            Draw.neonText(ctx, 'GET READY!', 480, 340, COLORS.NEON_GREEN, 16, 'center');
+            Draw.sketchText(ctx, 'GET READY!', 480, 340, COLORS.CRAYON_GREEN, 20, 'center');
         }
 
         ctx.restore();
@@ -304,33 +302,33 @@ class PlayingScene {
 
     drawLevelComplete(ctx) {
         ctx.save();
-        ctx.fillStyle = 'rgba(10, 10, 46, 0.5)';
+        ctx.fillStyle = 'rgba(250, 248, 240, 0.7)';
         ctx.fillRect(0, 0, 960, 540);
 
-        const pulse = 1 + Math.sin(Date.now() * 0.008) * 0.08;
+        const wobble = Math.sin(Date.now() * 0.005) * 0.03;
         ctx.save();
         ctx.translate(480, 240);
-        ctx.scale(pulse, pulse);
-        Draw.neonText(ctx, 'LEVEL COMPLETE!', 0, 0, COLORS.NEON_CYAN, 24, 'center');
+        ctx.rotate(wobble);
+        Draw.sketchText(ctx, 'LEVEL COMPLETE!', 0, 0, COLORS.CRAYON_PURPLE, 28, 'center');
         ctx.restore();
 
-        Draw.neonText(ctx, `BONUS: +${(this.currentLevelIndex + 1) * 500}`, 480, 300, COLORS.NEON_YELLOW, 14, 'center');
+        Draw.sketchText(ctx, `Bonus: +${(this.currentLevelIndex + 1) * 500}`, 480, 300, COLORS.CRAYON_YELLOW, 18, 'center');
         ctx.restore();
     }
 
     drawPaused(ctx) {
         ctx.save();
-        ctx.fillStyle = 'rgba(10, 10, 46, 0.8)';
+        ctx.fillStyle = 'rgba(250, 248, 240, 0.88)';
         ctx.fillRect(0, 0, 960, 540);
 
-        const pulse = 1 + Math.sin(Date.now() * 0.003) * 0.05;
+        const wobble = Math.sin(Date.now() * 0.002) * 0.02;
         ctx.save();
         ctx.translate(480, 250);
-        ctx.scale(pulse, pulse);
-        Draw.neonText(ctx, 'PAUSED', 0, 0, COLORS.NEON_PINK, 32, 'center');
+        ctx.rotate(wobble);
+        Draw.sketchText(ctx, 'PAUSED', 0, 0, COLORS.CRAYON_RED, 36, 'center');
         ctx.restore();
 
-        Draw.neonText(ctx, 'Press ESC to continue', 480, 320, COLORS.NEON_CYAN, 12, 'center');
+        Draw.sketchText(ctx, 'Press ESC to continue', 480, 320, COLORS.PENCIL, 15, 'center');
         ctx.restore();
     }
 }

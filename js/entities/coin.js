@@ -32,30 +32,16 @@ class Coin {
 
         ctx.save();
 
-        ctx.shadowColor = COLORS.GOLD;
-        ctx.shadowBlur = 12;
-        ctx.fillStyle = COLORS.GOLD;
-        ctx.beginPath();
-        ctx.arc(sx, bobY, this.radius, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.strokeStyle = COLORS.GOLD_CRAYON;
+        ctx.lineWidth = 2;
+        Draw.wobblyCircle(ctx, sx, bobY, this.radius, 2);
 
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = '#ffee44';
-        ctx.beginPath();
-        ctx.arc(sx, bobY, this.radius - 2, 0, Math.PI * 2);
-        ctx.fill();
+        Draw.sketchText(ctx, '$', sx, bobY + 1, COLORS.GOLD_CRAYON, 10, 'center');
 
-        ctx.fillStyle = COLORS.GOLD;
-        ctx.font = 'bold 10px monospace';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('$', sx, bobY + 1);
-
-        if (this.sparkleTimer % 0.8 < 0.4) {
-            ctx.fillStyle = COLORS.WHITE;
-            const sparkX = sx - 3 + Math.sin(this.sparkleTimer * 5) * 2;
-            const sparkY = bobY - 4;
-            ctx.fillRect(sparkX, sparkY, 2, 2);
+        if (this.sparkleTimer % 1.0 < 0.5) {
+            ctx.strokeStyle = COLORS.CRAYON_YELLOW;
+            ctx.lineWidth = 1;
+            Draw.wobblyStarDoodle(ctx, sx + 8, bobY - 8, 4);
         }
 
         ctx.restore();

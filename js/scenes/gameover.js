@@ -23,7 +23,6 @@ class GameOverScene {
             this.game.highScore = this.score;
         }
         this.game.persist();
-
         this.game.audio.stopMusic();
     }
 
@@ -45,16 +44,12 @@ class GameOverScene {
         if (input.wasJustPressed('Enter') || input.wasJustPressed('Space')) {
             this.game.audio.playSFX('select');
             switch (this.selectedOption) {
-                case 0:
-                    this.game.switchScene('store');
-                    break;
+                case 0: this.game.switchScene('store'); break;
                 case 1:
                     this.game.audio.startMusic();
                     this.game.switchScene('playing', { level: 0 });
                     break;
-                case 2:
-                    this.game.switchScene('menu');
-                    break;
+                case 2: this.game.switchScene('menu'); break;
             }
         }
     }
@@ -63,63 +58,56 @@ class GameOverScene {
         const w = this.game.width;
         const h = this.game.height;
 
-        const grad = ctx.createLinearGradient(0, 0, 0, h);
-        grad.addColorStop(0, '#0a0a2e');
-        grad.addColorStop(0.5, '#2a0020');
-        grad.addColorStop(1, '#0a0a2e');
-        ctx.fillStyle = grad;
+        ctx.fillStyle = COLORS.PAPER_WHITE;
         ctx.fillRect(0, 0, w, h);
+        Draw.notebookLines(ctx, w, h);
 
         const title = this.victory ? 'TOTALLY RADICAL!' : 'GAME OVER';
-        const titleColor = this.victory ? COLORS.NEON_GREEN : COLORS.NEON_RED;
+        const titleColor = this.victory ? COLORS.CRAYON_GREEN : COLORS.CRAYON_RED;
 
-        const flicker = this.victory ? 1 : (Math.sin(this.animTimer * 8) > -0.3 ? 1 : 0.3);
+        const wobble = Math.sin(this.animTimer * 2) * 0.03;
         ctx.save();
-        ctx.globalAlpha = flicker;
-        const pulse = 1 + Math.sin(this.animTimer * 3) * 0.05;
         ctx.translate(w / 2, 80);
-        ctx.scale(pulse, pulse);
-        Draw.neonText(ctx, title, 0, 0, titleColor, 32, 'center');
+        ctx.rotate(wobble);
+        Draw.sketchText(ctx, title, 0, 0, titleColor, 36, 'center');
         ctx.restore();
 
         if (this.victory) {
-            Draw.neonText(ctx, 'You beat all 5 levels!', w / 2, 130, COLORS.NEON_CYAN, 12, 'center');
+            Draw.sketchText(ctx, 'You beat all 5 levels!', w / 2, 130, COLORS.CRAYON_BLUE, 14, 'center');
         }
 
         const statsY = 170;
-        Draw.neonText(ctx, 'SCORE', w / 2, statsY, COLORS.NEON_CYAN, 12, 'center');
-        Draw.neonText(ctx, `${this.score}`, w / 2, statsY + 30, COLORS.NEON_YELLOW, 20, 'center');
+        Draw.sketchText(ctx, 'SCORE', w / 2, statsY, COLORS.CRAYON_BLUE, 14, 'center');
+        Draw.sketchText(ctx, `${this.score}`, w / 2, statsY + 30, COLORS.PENCIL, 24, 'center');
 
-        Draw.neonText(ctx, 'COINS EARNED', w / 2, statsY + 70, COLORS.NEON_CYAN, 12, 'center');
-        Draw.neonText(ctx, `${this.coins}`, w / 2, statsY + 100, COLORS.GOLD, 20, 'center');
+        Draw.sketchText(ctx, 'COINS EARNED', w / 2, statsY + 70, COLORS.CRAYON_BLUE, 14, 'center');
+        Draw.sketchText(ctx, `${this.coins}`, w / 2, statsY + 100, COLORS.GOLD_CRAYON, 24, 'center');
 
-        Draw.neonText(ctx, `LEVELS CLEARED: ${this.level}`, w / 2, statsY + 140, COLORS.NEON_GREEN, 10, 'center');
-
-        Draw.neonText(ctx, `TOTAL COINS: ${this.game.totalCoins}`, w / 2, statsY + 170, COLORS.GOLD, 10, 'center');
+        Draw.sketchText(ctx, `Levels Cleared: ${this.level}`, w / 2, statsY + 140, COLORS.CRAYON_GREEN, 13, 'center');
+        Draw.sketchText(ctx, `Total Coins: ${this.game.totalCoins}`, w / 2, statsY + 170, COLORS.GOLD_CRAYON, 13, 'center');
 
         if (this.score >= this.game.highScore && this.score > 0) {
-            const hsBlink = Math.sin(this.animTimer * 6) > 0;
-            if (hsBlink) {
-                Draw.neonText(ctx, 'NEW HIGH SCORE!', w / 2, statsY + 200, COLORS.NEON_PINK, 14, 'center');
+            const blink = Math.sin(this.animTimer * 6) > 0;
+            if (blink) {
+                Draw.sketchText(ctx, 'NEW HIGH SCORE!', w / 2, statsY + 200, COLORS.CRAYON_PINK, 18, 'center');
             }
         }
 
         for (let i = 0; i < this.options.length; i++) {
             const y = 430 + i * 35;
             const selected = i === this.selectedOption;
-            const color = selected ? COLORS.NEON_YELLOW : COLORS.NEON_CYAN;
-            const size = selected ? 14 : 11;
+            const color = selected ? COLORS.CRAYON_RED : COLORS.PENCIL;
+            const size = selected ? 18 : 15;
 
             if (selected) {
-                const blink = Math.sin(this.animTimer * 6) > 0;
-                if (blink) {
-                    Draw.neonText(ctx, '>', w / 2 - 120, y, COLORS.NEON_PINK, 14, 'center');
-                }
+                ctx.save();
+                ctx.strokeStyle = COLORS.CRAYON_RED;
+                ctx.lineWidth = 2;
+                Draw.wobblyArrow(ctx, w / 2 - 130, y, 16, 2);
+                ctx.restore();
             }
 
-            Draw.neonText(ctx, this.options[i], w / 2, y, color, size, 'center');
+            Draw.sketchText(ctx, this.options[i], w / 2, y, color, size, 'center');
         }
-
-        Draw.scanlines(ctx, w, h);
     }
 }

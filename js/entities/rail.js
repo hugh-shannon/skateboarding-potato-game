@@ -15,19 +15,17 @@ class Rail {
         if (sx + this.width < -50 || sx > 1010) return;
 
         ctx.save();
+        ctx.strokeStyle = COLORS.PENCIL;
+        ctx.lineWidth = 2;
 
-        ctx.fillStyle = '#444466';
-        ctx.fillRect(sx, this.y + this.height, 6, Physics.GROUND_Y - this.y - this.height);
-        ctx.fillRect(sx + this.width - 6, this.y + this.height, 6, Physics.GROUND_Y - this.y - this.height);
+        Draw.wobblyLine(ctx, sx, this.y + this.height / 2, sx + this.width, this.y + this.height / 2, 2);
+
+        Draw.wobblyLine(ctx, sx + 3, this.y + this.height, sx + 3, Physics.GROUND_Y, 2);
+        Draw.wobblyLine(ctx, sx + this.width - 3, this.y + this.height, sx + this.width - 3, Physics.GROUND_Y, 2);
 
         if (this.width > 150) {
-            ctx.fillRect(sx + this.width / 2 - 3, this.y + this.height, 6, Physics.GROUND_Y - this.y - this.height);
+            Draw.wobblyLine(ctx, sx + this.width / 2, this.y + this.height, sx + this.width / 2, Physics.GROUND_Y, 2);
         }
-
-        Draw.glowLine(ctx, sx, this.y + 2, sx + this.width, this.y + 2, COLORS.NEON_CYAN, 3, 8);
-
-        ctx.fillStyle = '#666688';
-        ctx.fillRect(sx, this.y, this.width, this.height);
 
         ctx.restore();
     }
